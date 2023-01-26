@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="mt-3 container">
+    <div class="d-flex justify-content-between border-bottom pb-3 mb-3 align-items-center">
+        <h2>All Questions</h2>
+        <a href="{% url 'forum:question-add' %}" class="btn btn-primary shadow-lg">Ask Question</a>
+    </div>
+    <div>
+        {% for question in question_list %}
+            <div class="row border-bottom mb-3" id="question-{{ question.id }}">
+                <div class="col d-flex flex-column justify-content-center text-end">
+                    {# <span>0 votes</span> #}
+                    <span>{{ question.answer_set.all|length }} answers</span>
+                    <span>{{ question.views }} views</span>
+                </div>
+                <div class="col-10">
+                    {# <h3><a href="{% url 'forum:question-detail' question.id %}">{{ question.title }}</a></h3> #}
+                    <h3><a href="{{ question.get_absolute_url }}">{{ question.title }}</a></h3>
+                    <p class="text-break">
+                        {{ question.text|slice:255 }}
+                        {% if question.text|length > 255 %}
+                            ...
+                        {% endif %}
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            {% for tag in question.tag_set.all %}
+                                <span class="badge bg-primary">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            <p>
+                                {{ question.user.username }} &mdash; asked {{ question.create_time|timesince }} ago
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="pagination text-center justify-content-center">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1{% if form.q.value %}&q={{ form.q.value }}{% endif %}" class="btn btn-primary">&#10094;&#10094;</a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if form.q.value %}&q={{ form.q.value }}{% endif %}" class="btn btn-primary">&#10094;</a>
+                {% endif %}
+        
+                <span class="current btn btn-primary disabled">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+        
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if form.q.value %}&q={{ form.q.value }}{% endif %}" class="btn btn-primary">&#10095;</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if form.q.value %}&q={{ form.q.value }}{% endif %}" class="btn btn-primary">&#10095;&#10095;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

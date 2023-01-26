@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="container">
+    <h2>Editing question &mdash; "{{ question.title }}"</h2>
+
+    <div class="bg-dark shadow-lg w-50 rounded p-5 text-white">
+        <form method="POST">
+            {% csrf_token %}
+            {% crispy form %}
+
+            <button type="submit" class="btn btn-primary">Edit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

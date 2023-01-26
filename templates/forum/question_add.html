@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <h2>Ask a public question</h2>
+
+    <div class="bg-dark shadow-lg w-50 rounded p-5 text-white">
+        <form method="POST">
+            {% csrf_token %}
+            {% crispy form %}
+            {% comment %} {{ form|crispy }} {% endcomment %}
+
+            <button type="submit" class="btn btn-primary">Ask</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
