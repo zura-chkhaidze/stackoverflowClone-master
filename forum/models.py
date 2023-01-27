@@ -33,3 +33,5 @@ class Answer(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=120)
     questions = models.ManyToManyField(Question, blank=True)
+   
+

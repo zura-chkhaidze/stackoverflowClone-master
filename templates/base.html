@@ -41,6 +41,7 @@
                       src="{{ request.user.profile.icon.url }}"
                       class="rounded-circle"
                       alt="{{ request.user.username }}-picture"> {{ request.user.username }}
+                    <a class="btn btn-danger ms-3" href="{% url 'users:users-profile' %}">{{ request.user.username }}</a>
                     <a class="btn btn-danger ms-3" href="{% url 'users:auth-logout' %}">Logout</a>
               {% else %}
                   <a class="btn btn-primary ms-3" href="{% url 'users:auth-login' %}">Login</a>
