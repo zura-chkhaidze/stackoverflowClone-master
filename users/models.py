@@ -10,6 +10,8 @@ class User(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     icon = models.ImageField(upload_to='user_profile_pics/')
+    def __str__(self):
+        return f'{self.user.username} Profile'
    
     
     
