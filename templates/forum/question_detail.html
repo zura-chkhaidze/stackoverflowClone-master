@@ -25,11 +25,13 @@
             {% endfor %}
         </div>
     </div>
-    {% comment %} <form action="{% url 'forum:answer-add' %}" method="POST"> {% endcomment %}
-    {% comment %} <form action="" method="POST">
-        {{ answer_form.as_p }}
+     <form action="{% url 'forum:answer-add' %}" method="POST"> 
+    <form action="" method="POST">
+        {{ answer_form.as_p }} 
+        {% csrf_token %}
+       
+
         <button class="btn btn-success">Answer</button>
-    </from> {% endcomment %}
 </div>
 
 {% endblock %}

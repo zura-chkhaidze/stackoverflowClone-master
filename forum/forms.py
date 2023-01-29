@@ -1,5 +1,5 @@
 from django import forms
-from forum.models import Question
+from forum.models import Answer, Question
 from users.models import User
 
 
@@ -32,3 +32,14 @@ class SearchForm(forms.Form):
                             'placeholder': "Search",
                             'aria-label': "Search"
                         }))
+
+
+
+
+class AnswerCreateForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = '__all__'
+        # fields = [
+        #     'user'
+        # ]

@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from forum.models import Question
+from forum.models import Answer, Question
 from forum.forms import QuestionCreateForm, SearchForm
 
 
@@ -27,6 +27,17 @@ class QuestionDetailView(DetailView):
     
     def get(self, request, *args, **kwargs):
         self.object: Question = self.get_object()
+        self.object.views += 1
+        self.object.save()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
+
+class AnswerDetailView(DetailView):
+    model = Answer
+    
+    def get(self, request, *args, **kwargs):
+        self.object:Answer = self.get_object()
         self.object.views += 1
         self.object.save()
         context = self.get_context_data(object=self.object)
@@ -68,6 +79,21 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         self.object: Question = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
+
+class AnswerCreateView(LoginRequiredMixin, CreateView):
+    model = Answer
+    fields = [
+        'text'
+    ]
+    success_url = reverse_lazy('forum:home')
+    template_name = 'forum/answer_add.html'
+
+    def form_valid(self, form):
+        self.object: Answer = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
         return super().form_valid(form)

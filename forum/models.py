@@ -29,6 +29,13 @@ class Answer(models.Model):
     text = models.TextField()
     create_time = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self) -> str:
+        return self.text
+
+    def get_absolute_url(self):
+        return reverse('forum:question-detail', kwargs={'pk': self.pk})
+
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=120)
