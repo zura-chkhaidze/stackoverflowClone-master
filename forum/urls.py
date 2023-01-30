@@ -11,5 +11,6 @@ urlpatterns = [
     path('question/<int:pk>/delete/', QuestionDeleteView.as_view(), name='question-delete'),
     path('ask/', QuestionCreateView.as_view(), name='question-add'),
     path('question/<int:pk>/', AnswerDetailView.as_view(), name='question-detail'),
-    path('answer/', AnswerCreateView.as_view(), name='answer-add'),
+    path('answer/<int:pk>/', AnswerCreateView.as_view(), name='answer-add'),
+    # path('answer/<int:pk>/', views.test_form, name='answer-add'),
 ]

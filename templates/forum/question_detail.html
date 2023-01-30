@@ -25,13 +25,16 @@
             {% endfor %}
         </div>
     </div>
-     <form action="{% url 'forum:answer-add' %}" method="POST"> 
-    <form action="" method="POST">
+{#     <form action="{% url 'forum:answer-add' %}" method="POST"> #}
+    <form action="{% url 'forum:answer-add' question.pk %}" method="POST">
         {{ answer_form.as_p }} 
         {% csrf_token %}
-       
+       <button class="btn btn-success">Answer</button>
 
-        <button class="btn btn-success">Answer</button>
+    </form>
+        {% comment %}<button onclick="{% url 'forum:answer-add' question.pk %}" class="btn btn-success" >Answer</button>
+{% endcomment %}
+
 </div>
 
 {% endblock %}
