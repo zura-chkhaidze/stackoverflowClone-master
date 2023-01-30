@@ -8,6 +8,12 @@ from forum.forms import QuestionCreateForm, SearchForm
 
 
 # Create your views here.
+
+def about(request):
+    return render(request, 'about.html')
+def contact(request):
+    return render(request, 'contact.html')
+
 class HomeView(ListView):
     model = Question
     template_name = 'forum/question_list.html'
