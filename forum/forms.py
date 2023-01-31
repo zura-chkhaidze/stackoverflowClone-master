@@ -40,6 +40,3 @@ class AnswerCreateForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = '__all__'
-        # fields = [
-        #     'user'
-        # ]

@@ -13,10 +13,9 @@
             </div>
         </div>
         <p class="text-break">
-            {{ question.text }}
+            {{ question.question_text }}
         </p>
-
-        <div class="answer-list">
+         <div class="answer-list">
             {% for answer in question.answer_set.all %}
                 <div id="answer-{{ answer.pk }}">
                     <h3>{{ answer.user }} &mdash; {{ answer.create_time }}</h3>
@@ -24,17 +23,22 @@
                 </div>
             {% endfor %}
         </div>
+        <form action="" method="POST"> </form>
+        <form action="{% url 'forum:answer-add'%}"  method="POST">
+            {{ answer_form.as_p }}
+            {% csrf_token %}
+            <button class="btn btn-success">Answer</button>
+        </form>
     </div>
-{#     <form action="{% url 'forum:answer-add' %}" method="POST"> #}
-    <form action="{% url 'forum:answer-add' question.pk %}" method="POST">
-        {{ answer_form.as_p }} 
-        {% csrf_token %}
-       <button class="btn btn-success">Answer</button>
+</div>
 
-    </form>
+
+
+
+
         {% comment %}<button onclick="{% url 'forum:answer-add' question.pk %}" class="btn btn-success" >Answer</button>
 {% endcomment %}
 
-</div>
+
 
 {% endblock %}

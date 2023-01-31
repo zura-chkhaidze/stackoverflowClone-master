@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from forum.models import Answer, Question, Tag
-from forum.forms import QuestionCreateForm, SearchForm
+from forum.forms import QuestionCreateForm, SearchForm, AnswerCreateForm
 from users.models import User
 
 # Create your views here.
@@ -41,6 +41,24 @@ class HomeView(ListView):
 class QuestionDetailView(DetailView):
     model = Question
 
+    # def __init__(self, **kwargs):
+    #     super().__init__(kwargs)
+    #     self.object = None
+
+    def question_detail(self, question_id):
+        question = get_object_or_404(Question, id=question_id)
+        if self.method == 'POST':
+            form = AnswerCreateForm(self.POST)
+            if form.is_valid():
+                answer = Answer.objects.create(
+                    answer_text=form.cleaned_data['answer_text'],
+                    question=question
+                )
+                return redirect('forum/question_detail', question_id=question_id)
+        else:
+            form = AnswerCreateForm()
+        return render(self, 'forum/question_detail.html', {'question': question, 'form': form})
+
     def get(self, request, *args, **kwargs):
         self.object: Question = self.get_object()
         self.object.views += 1
@@ -50,10 +68,18 @@ class QuestionDetailView(DetailView):
 
 
 class AnswerDetailView(DetailView):
-    model = Answer
+    model = Question
+
+    # def __init__(self, **kwargs):
+    #     super().__init__(kwargs)
+    #     self.object = None
+
+    # def __init__(self, **kwargs):
+    #     super().__init__(kwargs)
+    #     self.object = None
 
     def get(self, request, *args, **kwargs):
-        self.object: Answer = self.get_object()
+        self.object: Question = self.get_object()
         self.object.views += 1
         self.object.save()
         context = self.get_context_data(object=self.object)
@@ -103,16 +129,16 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
 class AnswerCreateView(LoginRequiredMixin, CreateView):
     model = Answer
     fields = [
-        'text'
+        'question', 'text', 'user'
     ]
     success_url = reverse_lazy('forum:home')
     template_name = 'forum/answer_add.html'
 
-    def form_valid(self, form):
-        self.object: Answer = form.save(commit=False)
-        self.object.user = self.request.user
-        self.object.save()
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     self.object: Answer = form.save(commit=False)
+    #     self.object.user = self.request.user
+    #     self.object.save()
+    #     return super().form_valid(form)
 
 
 # def test_form(request, pk):
