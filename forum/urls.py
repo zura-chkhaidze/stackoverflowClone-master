@@ -4,7 +4,7 @@ from . import views
 app_name = 'forum'
 urlpatterns = [
     path('about/', views.about, name="about"),
-     path('contact/', views.contact, name="contact"),
+    path('contact/', views.contact, name="contact"),
     path('', HomeView.as_view(), name='home'),
     path('question/<int:pk>/', QuestionDetailView.as_view(), name='question-detail'),
     path('question/<int:pk>/edit/', QuestionUpdateView.as_view(), name='question-edit'),

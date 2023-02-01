@@ -41,8 +41,7 @@ class HomeView(ListView):
 class QuestionDetailView(DetailView):
     model = Question
 
-    
-   
+
 
     def get(self, request, *args, **kwargs):
         self.object: Question = self.get_object()
@@ -86,13 +85,15 @@ class AnswerDetailView(DetailView):
 
 class QuestionCreateView(LoginRequiredMixin, CreateView):
     model = Question
+
     fields = [
-        'title', 'text'
+        'title', 'text',
     ]
     success_url = reverse_lazy('forum:home')
     template_name = 'forum/question_add.html'
 
-    def form_valid(self, form):
+
+    def form_valid(self, form,):
         self.object: Question = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
@@ -107,20 +108,6 @@ class AnswerCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('forum:home')
     template_name = 'forum/answer_add.html'
 
-    # def form_valid(self, form):
-    #     self.object: Answer = form.save(commit=False)
-    #     self.object.user = self.request.user
-    #     self.object.save()
-    #     return super().form_valid(form)
-
-
-# def test_form(request, pk):
-#     if request.method == 'POST':
-#         form = Answer(request.POST)
-#         form.save()
-#     else:
-#         form = Answer()
-#     return render(request, 'forum/answer_add.html', {'form': form})
 
 
 class StaffRequiredMixin:

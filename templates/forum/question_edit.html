@@ -6,14 +6,12 @@
 
 <div class="container">
     <h2>Editing question &mdash; "{{ question.title }}"</h2>
+       <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form|crispy}}
+        <button class="btn btn-success" id="logout-btn" type="submit">Edit</button>
+       </form>
 
-    <div class="bg-dark shadow-lg w-50 rounded p-5 text-white">
-        <form method="POST">
-            {% csrf_token %}
-            {% crispy form %}
 
-            <button type="submit" class="btn btn-primary">Edit</button>
-        </form>
-    </div>
 </div>
 {% endblock %}

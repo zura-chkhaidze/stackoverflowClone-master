@@ -26,7 +26,7 @@
         <form action="" method="POST"> </form>
         <form action="{% url 'forum:answer-add'%}"  method="POST">
             {{ answer_form.as_p }}
-            {% csrf_token %}
+             {% csrf_token %}
             <button class="btn btn-success">Answer</button>
         </form>
     </div>
