@@ -55,6 +55,14 @@ class AnswerDetailView(DetailView):
     model = Question
 
    
+class TagDetailView(DetailView):
+    model = Tag
+    fields = [
+        'name'
+    ]
+    
+    template_name = 'forum/question_list.html'
+
    
 
 
@@ -112,7 +120,7 @@ class StaffRequiredMixin:
 
 class QuestionUpdateView(StaffRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Question
-    fields = ['title', 'text']
+    fields = ['title', 'text' ,'tags']
     template_name = 'forum/question_edit.html'
 
 
