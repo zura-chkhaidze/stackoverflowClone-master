@@ -51,18 +51,6 @@ class QuestionDetailView(DetailView):
         return self.render_to_response(context)
 
 
-class AnswerDetailView(DetailView):
-    model = Question
-
-   
-class TagDetailView(DetailView):
-    model = Tag
-    fields = [
-        'name'
-    ]
-    
-    template_name = 'forum/question_list.html'
-
    
 
 
@@ -120,7 +108,7 @@ class StaffRequiredMixin:
 
 class QuestionUpdateView(StaffRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Question
-    fields = ['title', 'text' ,'tags']
+    fields = ['title', 'text' ]
     template_name = 'forum/question_edit.html'
 
 
@@ -142,3 +130,5 @@ class AnswerCreateView(StaffRequiredMixin,LoginRequiredMixin, CreateView):
         self.object.user = self.request.user
         return super().form_valid(form)
 
+class AnswerDetailView(DetailView):
+    model = Question
