@@ -95,7 +95,7 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
     model = Question
 
     fields = [
-        'title', 'text',
+        'title', 'text'
     ]
     success_url = reverse_lazy('forum:home')
     template_name = 'forum/question_add.html'
@@ -120,7 +120,7 @@ class StaffRequiredMixin:
 
 class QuestionUpdateView(StaffRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Question
-    fields = ['title', 'text' ,'tags']
+    fields = ['title', 'text' ]
     template_name = 'forum/question_edit.html'
 
 

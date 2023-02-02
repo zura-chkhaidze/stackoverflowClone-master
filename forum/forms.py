@@ -6,15 +6,9 @@ from users.models import User
 
 
 class QuestionCreateForm(forms.ModelForm):
-     tags= forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False
-    )
-
      class Meta:
         model = Question
-        fields = ['title', 'text', 'tags']
+        fields = '__all__'
         # fields = [
         #     'user'
         # ]
