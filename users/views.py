@@ -28,7 +28,12 @@ class ProfileView(CreateView):
     model = Profile
     template_name = 'users/profile.html'
     success_url = reverse_lazy('forum:home')
-    fields ='__all__'
+    fields =['icon']
+
+    def form_valid(self, form):
+        self.object: Profile = form.save(commit=False)
+        self.object.user = self.request.user
+        return super().form_valid(form)
 
    
     
