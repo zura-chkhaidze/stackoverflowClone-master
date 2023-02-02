@@ -83,7 +83,7 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
     model = Question
 
     fields = [
-        'title', 'text',
+        'title', 'text'
     ]
     success_url = reverse_lazy('forum:home')
     template_name = 'forum/question_add.html'
