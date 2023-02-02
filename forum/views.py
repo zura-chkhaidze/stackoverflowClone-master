@@ -100,13 +100,6 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class AnswerCreateView(LoginRequiredMixin, CreateView):
-    model = Answer
-    fields = [
-        'question', 'text', 'user'
-    ]
-    success_url = reverse_lazy('forum:home')
-    template_name = 'forum/answer_add.html'
 
 
 
@@ -126,3 +119,18 @@ class QuestionUpdateView(StaffRequiredMixin, LoginRequiredMixin, UpdateView):
 class QuestionDeleteView(StaffRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Question
     success_url = reverse_lazy('forum:home')
+
+
+
+
+class AnswerCreateView(StaffRequiredMixin,LoginRequiredMixin, CreateView):
+    model = Answer
+    fields = ['text', 'question']
+    success_url = reverse_lazy('forum:home')
+    template_name = 'forum/answer_add.html'
+
+    def form_valid(self, form):
+        self.object: Answer = form.save(commit=False)
+        self.object.user = self.request.user
+        return super().form_valid(form)
+
