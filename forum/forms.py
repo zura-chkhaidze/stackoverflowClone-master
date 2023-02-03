@@ -1,17 +1,27 @@
 from django import forms
-from forum.models import Answer, Question,Tag
+from forum.models import Answer, Question, Tag
 from users.models import User
 
 
-
-
 class QuestionCreateForm(forms.ModelForm):
-     class Meta:
+    class Meta:
         model = Question
-        fields = '__all__'
-        # fields = [
-        #     'user'
-        # ]
+        fields = [
+            'title', 'text'
+        ]
+
+
+    tags = forms.ModelMultipleChoiceField(Tag.objects.all())
+
+    def save(self, user, commit=True,):
+        question =super().save(commit=False)
+        question.user = user
+        question.save()
+        print(self.cleaned_data['tags'])
+        question.tag_set.add(*self.cleaned_data['tags'])
+        return question
+
+
 
 
 class SearchForm(forms.Form):
@@ -22,8 +32,6 @@ class SearchForm(forms.Form):
                             'placeholder': "Search",
                             'aria-label': "Search"
                         }))
-
-
 
 
 class AnswerCreateForm(forms.ModelForm):

@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -6,6 +7,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from forum.models import Answer, Question, Tag
 from forum.forms import QuestionCreateForm, SearchForm, AnswerCreateForm
 from users.models import User
+import re
+
 
 # Create your views here.
 
@@ -24,11 +27,12 @@ class HomeView(ListView):
 
     def get_queryset(self):
         input_text = self.request.GET.get('q', '')
-        parts = input_text.split(':')
-        if len(parts) > 1:
+        if input_text.startswith('user:'):
+            parts = input_text.split(':')
+
             return Question.objects.filter(user__username__icontains=parts[1])
         elif input_text.startswith('[') and input_text.endswith(']'):
-            return Question.objects.filter(tag__name__icontains=input_text.replace('[', '').replace(']', ''))
+            return Question.objects.filter(tag__name__icontains=input_text[1:-1])
 
         return Question.objects.filter(title__icontains=input_text)
 
@@ -41,17 +45,12 @@ class HomeView(ListView):
 class QuestionDetailView(DetailView):
     model = Question
 
-
-
     def get(self, request, *args, **kwargs):
         self.object: Question = self.get_object()
         self.object.views += 1
         self.object.save()
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
-
-
-   
 
 
 # def create_question_view(request):
@@ -81,21 +80,14 @@ class QuestionDetailView(DetailView):
 
 class QuestionCreateView(LoginRequiredMixin, CreateView):
     model = Question
+    form_class = QuestionCreateForm
 
-    fields = [
-        'title', 'text'
-    ]
     success_url = reverse_lazy('forum:home')
     template_name = 'forum/question_add.html'
 
-
-    def form_valid(self, form,):
-        self.object: Question = form.save(commit=False)
-        self.object.user = self.request.user
-        self.object.save()
-        return super().form_valid(form)
-
-
+    def form_valid(self, form, ):
+        self.object: Question = form.save(self.request.user,commit=False)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 
@@ -108,7 +100,7 @@ class StaffRequiredMixin:
 
 class QuestionUpdateView(StaffRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Question
-    fields = ['title', 'text' ]
+    fields = ['title', 'text']
     template_name = 'forum/question_edit.html'
 
 
@@ -117,9 +109,7 @@ class QuestionDeleteView(StaffRequiredMixin, LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('forum:home')
 
 
-
-
-class AnswerCreateView(StaffRequiredMixin,LoginRequiredMixin, CreateView):
+class AnswerCreateView(StaffRequiredMixin, LoginRequiredMixin, CreateView):
     model = Answer
     fields = ['text', 'question']
     success_url = reverse_lazy('forum:home')
@@ -129,6 +119,7 @@ class AnswerCreateView(StaffRequiredMixin,LoginRequiredMixin, CreateView):
         self.object: Answer = form.save(commit=False)
         self.object.user = self.request.user
         return super().form_valid(form)
+
 
 class AnswerDetailView(DetailView):
     model = Question
