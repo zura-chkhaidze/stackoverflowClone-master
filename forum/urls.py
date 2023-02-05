@@ -1,6 +1,7 @@
 from django.urls import path
-from forum.views import AnswerCreateView, AnswerDetailView, HomeView, QuestionDetailView, QuestionCreateView, QuestionUpdateView, QuestionDeleteView
+from forum.views import HomeView, QuestionDetailView, QuestionCreateView, QuestionUpdateView, QuestionDeleteView
 from . import views
+from .views import question_detail
 app_name = 'forum'
 urlpatterns = [
     path('about/', views.about, name="about"),
@@ -10,7 +11,6 @@ urlpatterns = [
     path('question/<int:pk>/edit/', QuestionUpdateView.as_view(), name='question-edit'),
     path('question/<int:pk>/delete/', QuestionDeleteView.as_view(), name='question-delete'),
     path('ask/', QuestionCreateView.as_view(), name='question-add'),
-    path('question/<int:pk>/answer/', AnswerDetailView.as_view(), name='question-detail'),
-    path('answer/', AnswerCreateView.as_view(), name='answer-add'),
-    # path('answer/<int:pk>/', views.test_form, name='answer-add'),
+    path('<int:pk>/', question_detail, name='question-detail')
+
 ]

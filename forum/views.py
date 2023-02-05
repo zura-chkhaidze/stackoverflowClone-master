@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -53,31 +54,6 @@ class QuestionDetailView(DetailView):
         return self.render_to_response(context)
 
 
-# def create_question_view(request):
-#     if request.method == 'GET':
-#         return render(
-#             request, 
-#             'forum/question_add.html', 
-#             {
-#                 'form': QuestionCreateForm()
-#             }
-#         )
-
-#     print(request.POST)
-#     form = QuestionCreateForm(request.POST)
-
-#     if form.is_valid():
-#         form.save()
-#         return redirect('forum:home')
-
-#     return render(
-#         request, 
-#         'forum/question_add.html', 
-#         {
-#             'form': form
-#         }
-#     )
-
 class QuestionCreateView(LoginRequiredMixin, CreateView):
     model = Question
     form_class = QuestionCreateForm
@@ -86,9 +62,8 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
     template_name = 'forum/question_add.html'
 
     def form_valid(self, form, ):
-        self.object: Question = form.save(self.request.user,commit=False)
+        self.object: Question = form.save(self.request.user, commit=False)
         return HttpResponseRedirect(self.get_success_url())
-
 
 
 class StaffRequiredMixin:
@@ -109,17 +84,16 @@ class QuestionDeleteView(StaffRequiredMixin, LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('forum:home')
 
 
-class AnswerCreateView(StaffRequiredMixin, LoginRequiredMixin, CreateView):
-    model = Answer
-    fields = ['text', 'question']
-    success_url = reverse_lazy('forum:home')
-    template_name = 'forum/answer_add.html'
+@login_required
+def question_detail(request, pk):
+    question = get_object_or_404(Question, pk=pk)
+    answer = Answer(user=request.user, question=question)
 
-    def form_valid(self, form):
-        self.object: Answer = form.save(commit=False)
-        self.object.user = self.request.user
-        return super().form_valid(form)
-
-
-class AnswerDetailView(DetailView):
-    model = Question
+    if request.method == "POST":
+        form = AnswerCreateForm(request.POST, instance=answer)
+        if form.is_valid():
+            answer = form.save()
+            return redirect(question)
+    else:
+        form = AnswerCreateForm(instance=answer)
+    return render(request, 'forum/question_detail.html', {'question': question, 'form': form})
